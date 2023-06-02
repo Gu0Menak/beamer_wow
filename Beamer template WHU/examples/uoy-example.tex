@@ -1,0 +1,333 @@
+\documentclass[t,compress,aspectratio=43,12p]{beamer} %字号 frame长宽比
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+
+%\usepackage{CJK} % 临时中文支持
+\usepackage{CJKutf8} % 临时中文支持 部分\cite报错解决方法
+% 请使用\begin{CJK*}{UTF8}{gbsn}你好多戈！\end{CJK*}
+% 在gbsn中指定gkai-楷书, gbsn-宋体
+
+\usepackage[uoybglogo]{uoy-beamer}
+\usepackage{listings}
+
+%\setbeamerfont{footnote}{size=\tiny} %调整注脚的文字大小
+% use \footfullcite{Beacom_2004} to footnote the reference
+
+
+%%% bibtex package
+\usepackage[backend=biber,style=phys,sorting=none]{biblatex}
+\addbibresource{reference.bib} %BibTeX数据文件及位置
+\AtNextBibliography{\footnotesize} % Bibliography font size调节
+
+
+% Set to 1 or comment to disable transparency and enable full opacity.
+\setblockbodyopacity{0.8}
+
+% Listings
+\definecolor{cident}{rgb}{1,0.33,0.42}
+\definecolor{ckeyw}{rgb}{1,0.2,0.8}
+\definecolor{ccomm}{rgb}{0,0.8,0}
+\definecolor{cstr}{rgb}{0.8,0,0}
+
+\lstset{language=[LaTeX]{TeX},
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\color{ckeyw}\bfseries,
+  identifierstyle=\color{cident}\bfseries,
+  commentstyle=\color{ccomm},
+  stringstyle=\color{cstr},
+  showstringspaces=false,
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=2,
+%   numbers=left,
+%   stepnumber=1,
+%   firstnumber=1,
+%   numberfirstline=true,
+  }
+  
+\uoysetidentity{Department of}{Physics}
+
+\title[Short title]{\begin{CJK*}{UTF8}{gbsn}你好多戈！\end{CJK*}Hello Doge!\\ long fat doge new line}
+\subtitle{Subdoge}
+\author[Short author(s)]{Meng Meng\inst{1} \and Author Two\inst{2}}
+\institute{\inst{1}Sun Yat-sen University \\ \inst{2}Another Affiliation}
+\date[18 May]{18 May 2023}
+
+% \setlength{\frametitlemargin}{1mm}
+
+\begin{document}
+% ==============================================================
+%                         --- Welcome frame
+% ==============================================================
+\begin{frame}[plain]
+\maketitle
+\end{frame}
+
+% Uncomment to hide your department next
+% \uoysetidentity{}{}
+
+% ==============================================================
+%                         --- TOC
+% ==============================================================
+\begin{frame}
+\tableofcontents
+\end{frame}
+
+
+
+% ==============================================================
+%                         --- Section 1
+% ==============================================================
+\section{Section1} %section show in contents
+\begin{frame}[fragile]
+\frametitle{Slide title} %slide title show in the top of the slide
+\[\Gamma=\frac{1}{\Lambda}\]
+\begin{CJK*}{UTF8}{gbsn}你好多戈！\end{CJK*}
+%% contents of this slide
+This template includes a light and a dark theme, as well as an option to remove the UoY logo from the background. Options:
+\begin{description}
+  \item[uoybglogo] To place a watermark version of the University of York logo in the background
+  \item[darktheme] To enable the dark theme
+\end{description}
+So for having a dark theme and the logo in the background, you'd load the style with
+\begin{lstlisting}
+\usepackage[uoybglogo,darktheme]{uoy-beamer}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Slide title}
+You may need to add some space after the frame title
+\begin{lstlisting}
+\setlength{\frametitlemargin}{10mm}
+\end{lstlisting}
+
+\pause  %单独成一页，类似动画效果
+\vskip 3mm
+Using an empty frametitle or not using it, you will need to add initial space by yourself.
+To have an ``empty'' frametitle you can use
+\begin{lstlisting}
+\emptyframetitle
+\end{lstlisting}
+
+\pause
+or (more portable)
+\begin{lstlisting}
+\frametitle{\strut}
+\end{lstlisting}
+\end{frame}
+
+\subsubsection{Section1-2-1}
+\begin{frame}[fragile]
+\noframetitle
+If you do not want any titles in a frame, you can use
+\begin{lstlisting}
+\noframetitle
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\noframetitle[0mm]
+Using 
+\begin{lstlisting}
+\noframetitle[0mm]
+\end{lstlisting}
+
+\vskip 5mm
+As above, you may want to use the same command with a length to specify where (vertically) the text should begin.
+\end{frame}
+
+\begin{frame}[fragile]
+\framesingletitle{Single title}
+If you need just a simple title you can use
+\begin{lstlisting}
+\framesingletitle{your title}
+\end{lstlisting}
+
+\vskip 5mm
+You may want to use the same command with a length to specify where (vertically) the title should begin.
+\begin{lstlisting}
+\framesingletitle[0mm]{your title}
+\end{lstlisting}
+\end{frame}
+
+\subsection{Section1-1}
+\begin{frame}[fragile]
+\frametitle{Blocks}
+\begin{block}{Additional blocks}
+\begin{itemize}
+  \item termblock
+  \item problock
+  \item conblock
+  \item yellowblock
+  \item blueblock
+\end{itemize}
+\end{block}
+Transparency of blocks may not look very nice on dark backgrounds, to disable it:
+\begin{lstlisting}
+\setblockbodyopacity{1}
+\end{lstlisting}
+\end{frame}
+
+\subsection{Section1-2}
+\subsubsection{Section1-2-1}
+\begin{frame}
+\frametitle{Additional blocks}
+\begin{block}{block}
+\begin{itemize} \item text \end{itemize}
+\end{block}
+\begin{block}[green]{block[green] - all blocks support custom colours for item elements}
+\begin{itemize} \item text \end{itemize}
+\end{block}
+\begin{exampleblock}{exampleblock}
+\begin{itemize} \item text \end{itemize}
+\end{exampleblock}
+\begin{alertblock}{alertblock}
+\begin{itemize} \item text \end{itemize}
+\end{alertblock}
+\end{frame}
+
+\begin{frame}
+\frametitle{Additional blocks}
+\begin{blueblock}{blueblock}
+\begin{itemize} \item text \end{itemize}
+\end{blueblock}
+\begin{yellowblock}{yellowblock}
+\begin{itemize} \item text \end{itemize}
+\end{yellowblock}
+\begin{termblock}{termblock}
+\begin{itemize} \item text \end{itemize}
+\end{termblock}
+\end{frame}
+
+\begin{frame}
+\frametitle{Additional blocks}
+\begin{cleanblock}{cleanblock}
+\begin{itemize} \item text \end{itemize}
+\end{cleanblock}
+\begin{whiteblock}{whiteblock}
+\begin{itemize} \item text \end{itemize}
+\end{whiteblock}
+\begin{grayblock}{grayblock}
+\begin{itemize} \item text \end{itemize}
+\end{grayblock}
+\end{frame}
+
+\begin{frame}
+\frametitle{Additional blocks}
+\begin{problock}{problock}
+\begin{itemize} \item text \end{itemize}
+\end{problock}
+\begin{conblock}{conblock}
+\begin{itemize} \item text \end{itemize}
+\end{conblock}
+\end{frame}
+
+\begin{frame}
+\frametitle{Size always matters}
+\begin{block}{block - long}
+  \begin{itemize}
+    \item blabla...
+    \item blabla...
+    \begin{itemize}
+      \item nested blabla...
+      \item nested blabla...
+    \end{itemize}
+    \item blabla...
+    \begin{itemize}
+    \item nested blabla...
+    \item nested blabla...
+    \item nested blabla...
+    \end{itemize}
+    \item blabla...
+    \item blabla...
+  \end{itemize}
+\end{block}
+\begin{block}{block - empty}
+\end{block}
+\end{frame}
+
+\begin{frame}
+\frametitle{Size always matters}
+\begin{block}{block - longest}
+  \begin{itemize}
+    \item blabla...
+    \item blabla...
+    \begin{itemize}
+      \item nested blabla...
+      \item nested blabla...
+    \end{itemize}
+    \item blabla...
+    \begin{itemize}
+    \item nested blabla...
+    \item nested blabla...
+    \item nested blabla...
+    \end{itemize}
+    \item blabla...
+    \item blabla...
+    \item blabla...
+    \begin{itemize}
+    \item nested blabla...
+    \item nested blabla...
+    \item nested blabla...
+    \item nested blabla...
+    \end{itemize}
+  \end{itemize}
+\end{block}
+\end{frame}
+
+\subsection{Section1-3}
+\begin{frame}
+\frametitle{This is an example of a very long title that needs to be split in two lines (no longer than 2 lines are visually comfortable)}
+Bla bla bla...
+\end{frame}
+
+
+
+% ==============================================================
+%                         --- Section 2
+% ==============================================================
+\section{Section2}
+\begin{frame}
+\frametitle{Slide title}
+Bla bla bla...
+\end{frame}
+
+\subsection{Section2-1}
+\begin{frame}
+\frametitle{Slide title}
+Bla bla bla...
+\end{frame}
+
+\subsection{Section2-2}
+\begin{frame}
+\frametitle{Slide title}
+Bla bla bla...
+\end{frame}
+
+
+% ==============================================================
+%                         --- THE END
+% ==============================================================
+\begin{frame}
+\framesingletitle{The END}
+
+\begin{center}
+\begin{minipage}{0.8\textwidth}
+  \quotesentence{%
+  ``Do not close a presentation with The End'' [author]
+  }
+\end{minipage}
+\end{center}
+\end{frame}
+
+\begin{frame}
+  \printbibliography
+\end{frame}
+
+
+
+
+
+% -------------------------------------------------------------
+\end{document}

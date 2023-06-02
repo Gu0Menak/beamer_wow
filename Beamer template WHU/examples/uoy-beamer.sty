@@ -1,0 +1,718 @@
+% ----------------------------------------------------------------------
+% Date: 6 June 2022
+% Author: Roberto Metere
+% Project: Beamer template for University of York
+%
+% Copyright (C) 2022 Roberto Metere
+% ----------------------------------------------------------------------
+%
+\mode<presentation>
+\usepackage{lmodern}
+\usepackage[sfdefault,scaled=.9,light]{FiraSans}
+\usepackage{minibox}
+\usepackage{varwidth}
+\usepackage{etoolbox}
+\usepackage{tikz}
+\usepackage{amssymb}
+\pdfsuppresswarningpagegroup=1
+
+\usepackage{color}
+% Tikz libraries
+\usetikzlibrary{backgrounds,fit,positioning,calc}
+
+% Block transparency
+\newcommand{\setblockbodyopacity}[1]{\def\blockbodyopacity{#1}}
+
+% Official font
+% \setmainfont{Arial} % fontspec package
+% \renewcommand{\familydefault}{\sfdefault} % use with helvet for Arial-like font
+\renewcommand{\rmdefault}{cmr} % Arial
+\renewcommand{\sfdefault}{cmr} % Arial
+
+%% Figure 环境设置
+\setbeamertemplate{caption}[numbered]
+\setbeamerfont{caption}{size=\scriptsize}
+
+% Default font size % scrextend
+% \changefontsizes{9pt}
+
+% Official colours
+\definecolor{uoydarkfg}{rgb}{0.2,0.24,0.28}
+\definecolor{uoyblue}{rgb}{0,0.38,0.49}
+\definecolor{uoybluealt}{rgb}{0.09,0.37,0.47}
+\definecolor{uoydarkbg}{rgb}{0.15,0.19,0.23}
+\definecolor{uoypurple}{rgb}{0.64,0.2,0.47}
+\definecolor{uoyred}{rgb}{0.84,0.02,0}
+\definecolor{uoygray}{rgb}{0.35,0.35,0.35}
+
+% Default [main]
+\newcommand{\incolour}{}
+\newcommand{\tabtype}{main}
+\newcommand{\fsize}[1]{\fontsize{#1}{#1}}
+
+\colorlet{uoysubidcolour}{uoypurple}
+\colorlet{uoyidcolour}{uoybluealt}
+\colorlet{uoystrongcolour}{uoyblue}
+\colorlet{uoylightcolour}{uoypurple}
+\colorlet{uoytextcolor}{uoygray}
+
+\newcommand{\uoysubid}{Department/School of}
+\newcommand{\uoyid}{Area}
+\newcommand{\uoysetidentity}[2]{
+  \renewcommand{\uoysubid}{#1}
+  \renewcommand{\uoyid}{#2}
+}
+
+\definecolor{canvascolor}{rgb}{1.0, 1.0, 1.0}
+\colorlet{slidetitle}{uoybluealt}
+\colorlet{slidetitles}{uoypurple}
+\colorlet{quotesentence}{uoyblue}
+\colorlet{blockexfg}{white}
+\colorlet{blockexbg}{uoylightcolour}
+\colorlet{dotscolour}{uoypurple}
+
+% Workaround for renewenvironment issues
+\long\def\beamer@newenvnoopt#1#2#3#4{%
+  \expandafter\renewcommand\expandafter<\expandafter>\csname#1\endcsname[#2]{#3}%<- here
+  \expandafter\long\expandafter\def\csname end#1\endcsname{#4}%
+}
+\long\def\beamer@newenvopt#1#2[#3]#4#5{%
+  \expandafter\renewcommand\expandafter<\expandafter>\csname#1\endcsname[#2][#3]{#4}%<- here
+  \expandafter\long\expandafter\def\csname end#1\endcsname{#5}%
+}
+
+% Distance between title and content
+\newlength{\frametitlemargin}
+\setlength{\frametitlemargin}{0mm}
+
+\newlength{\blockbottommargin}
+\setlength{\blockbottommargin}{2mm}
+\newlength{\blocktopmargin}
+\setlength{\blocktopmargin}{0mm}
+
+\newcommand{\noframetitle}[1][-9mm]{\vskip #1}
+\newcommand{\framesingletitle}[2][16mm]{{\vskip #1}\noindent{\begin{center}\color{slidetitles} {\Huge \textbf #2}\end{center}}{\vskip 2mm}{\vskip \frametitlemargin}}
+\newcommand{\emptyframetitle}{\frametitle{\strut}}
+
+% To gain partially transparent blocks
+\ifx\blockbodyopacity\@empty\else
+  \def\blockbodyopacity{1}
+\fi
+\newlength{\blockheightcorr}
+\setlength{\blockheightcorr}{-3.16mm}
+\newlength{\blockwidthcorr}
+\setlength{\blockwidthcorr}{2.48mm}
+\newlength{\blockyshcorr}
+\setlength{\blockyshcorr}{-0.53mm}
+\newenvironment{blockminipage}[2]{%
+\colorlet{bodycolour}{#1}%
+\@ifundefined{bodyopacity}{\newcommand{\bodyopacity}{#2}}{\renewcommand{\bodyopacity}{#2}}%
+\begin{tikzpicture}[every node/.style={inner sep=0,outer sep=0}]%
+\node [text width=\textwidth] (childblock) \bgroup%
+\begin{minipage}{\textwidth}%
+}{%
+\end{minipage}%
+\egroup;%
+\begin{scope}[on background layer]
+  \path
+  let
+    \p{n}=(childblock.north),
+    \p{s}=(childblock.south),
+    \p{w}=(childblock.west),
+    \p{e}=(childblock.east),
+    \n{h}={\y{n}-\y{s}+(\blockheightcorr)},
+    \n{w}={\x{e}-\x{w}+\blockwidthcorr}
+  in
+  node [rectangle, draw=none, fill=bodycolour, yshift=\blockyshcorr, fill opacity=\bodyopacity, overlay, anchor=center, minimum width=\n{w}, minimum height=\n{h}] {};
+\end{scope}
+\end{tikzpicture}%
+}
+
+
+\renewenvironment<>{block}[2][uoyblue]{%
+  \vskip \blocktopmargin%
+  \begin{blockminipage}{white}{0}%
+  \begin{actionenv}#3%
+    \def\insertblocktitle{\hspace{.3em}\bfseries#2}%
+    \par%
+    \mode<presentation>{%
+      \setbeamercolor{block title}{fg=uoytextcolor!80!white,bg=}
+      \setbeamercolor{block body}{fg=uoytextcolor!90!white,bg=}
+      \setbeamercolor{description item}{fg=#1}
+      \setbeamercolor{description subitem}{fg=#1}
+      \setbeamercolor{enumerate item}{fg=#1}
+      \setbeamercolor{enumerate subitem}{fg=#1}
+      \setbeamercolor{itemize item}{fg=#1}
+      \setbeamercolor{itemize subitem}{fg=#1}
+      \setbeamertemplate{itemize item}[triangle]
+      \setbeamertemplate{itemize subitem}[circle]
+      \setbeamercolor{local structure}{fg=block title.bg}}%
+    \usebeamertemplate{block begin}
+    {\vspace{-1em}\color{black!40!white}\tiny\hrulefill}\par
+    }
+  {\par%
+    \usebeamertemplate{block end}%
+  \end{actionenv}\vskip \blockbottommargin%
+  \end{blockminipage}%
+  }
+
+
+\renewenvironment<>{cleanblock}[2][uoypurple]{%
+  \vskip \blocktopmargin%
+  \begin{blockminipage}{white}{0}%
+  \begin{actionenv}#3%
+    \def\insertblocktitle{\bfseries#2}%
+    \par%
+    \mode<presentation>{%
+      \setbeamercolor{block title}{fg=uoytextcolor!80!white,bg=}
+      \setbeamercolor{block body}{fg=uoytextcolor!90!white,bg=}
+      \setbeamercolor{description item}{fg=#1}
+      \setbeamercolor{description subitem}{fg=#1}
+      \setbeamercolor{enumerate item}{fg=#1}
+      \setbeamercolor{enumerate subitem}{fg=#1}
+      \setbeamercolor{itemize item}{fg=#1}
+      \setbeamercolor{itemize subitem}{fg=#1}
+      \setbeamertemplate{itemize item}[triangle]
+      \setbeamertemplate{itemize subitem}[circle]
+      \setbeamercolor{local structure}{fg=block title.bg}}%
+    \usebeamertemplate{block begin}}
+  {\par%
+    \usebeamertemplate{block end}%
+  \end{actionenv}\vskip \blockbottommargin%
+  \end{blockminipage}%
+  }
+
+
+\renewenvironment<>{whiteblock}[2][white!40!black]{%
+  \vskip \blocktopmargin%
+  \begin{blockminipage}{white}{\blockbodyopacity}%
+  \begin{actionenv}#3%
+    \def\insertblocktitle{\bfseries#2}%
+    \par%
+    \mode<presentation>{%
+      \setbeamercolor{block title}{fg=white!10!black,bg=white}
+      \if\blockbodyopacity1
+        \setbeamercolor{block body}{fg=black,bg=white}
+      \else
+        \setbeamercolor{block body}{fg=black,bg=}
+      \fi
+      \setbeamercolor{description item}{fg=#1}
+      \setbeamercolor{description subitem}{fg=#1}
+      \setbeamercolor{enumerate item}{fg=#1}
+      \setbeamercolor{enumerate subitem}{fg=#1}
+      \setbeamercolor{itemize item}{fg=#1}
+      \setbeamercolor{itemize subitem}{fg=#1}
+      \setbeamertemplate{itemize item}[triangle]
+      \setbeamertemplate{itemize subitem}[circle]
+      \setbeamercolor{local structure}{fg=#1}}%
+    \usebeamertemplate{block begin}}
+  {\par%
+    \usebeamertemplate{block end}%
+  \end{actionenv}\vskip \blockbottommargin%
+  \end{blockminipage}%
+  }
+
+
+\renewenvironment<>{grayblock}[2][white!50!black]{%
+  \vskip \blocktopmargin%
+  \begin{blockminipage}{black!20!white}{\blockbodyopacity}%
+  \begin{actionenv}#3%
+    \def\insertblocktitle{#2}%
+    \par%
+    \mode<presentation>{%
+      \setbeamercolor{block title}{fg=white,bg=white!50!black}
+      \if\blockbodyopacity1
+        \setbeamercolor{block body}{fg=black,bg=white!90!black}
+      \else
+        \setbeamercolor{block body}{fg=black,bg=}
+      \fi
+      \setbeamercolor{description item}{fg=#1}
+      \setbeamercolor{description subitem}{fg=#1}
+      \setbeamercolor{enumerate item}{fg=#1}
+      \setbeamercolor{enumerate subitem}{fg=#1}
+      \setbeamercolor{itemize item}{fg=#1}
+      \setbeamercolor{itemize subitem}{fg=#1}
+      \setbeamertemplate{itemize item}[triangle]
+      \setbeamertemplate{itemize subitem}[circle]
+      \setbeamercolor{local structure}{fg=block title.bg}}%
+    \usebeamertemplate{block begin}}
+  {\par%
+    \usebeamertemplate{block end}%
+  \end{actionenv}\vskip \blockbottommargin%
+  \end{blockminipage}%
+  }
+
+\renewenvironment<>{exampleblock}[2][green!65!black]{%
+  \vskip \blocktopmargin%
+  \begin{blockminipage}{green!40!white}{\blockbodyopacity}%
+  \begin{actionenv}#3%
+    \def\insertblocktitle{#2}%
+    \par%
+    \mode<presentation>{%
+      \setbeamercolor{block title example}{fg=white,bg=green!65!black}
+      \if\blockbodyopacity1
+        \setbeamercolor{block body example}{fg=black,bg=green!10!white}
+      \else
+        \setbeamercolor{block body example}{fg=black,bg=}
+      \fi
+      \setbeamercolor{description item}{fg=#1}
+      \setbeamercolor{description subitem}{fg=#1}
+      \setbeamercolor{enumerate item}{fg=#1}
+      \setbeamercolor{enumerate subitem}{fg=#1}
+      \setbeamercolor{itemize item}{fg=#1}
+      \setbeamercolor{itemize subitem}{fg=#1}
+      \setbeamertemplate{itemize item}[triangle]
+      \setbeamertemplate{itemize subitem}[circle]
+      \setbeamercolor{local structure example}{use=block title,%
+          fg=block title.bg}}%
+    \usebeamertemplate{block example begin}}
+  {\par%
+    \usebeamertemplate{block example end}%
+  \end{actionenv}\vskip \blockbottommargin%
+  \end{blockminipage}}
+
+\renewenvironment<>{alertblock}[2][uoyred!75!black]{%
+  \vskip \blocktopmargin%
+  \begin{blockminipage}{uoyred!40!white}{\blockbodyopacity}%
+  \begin{actionenv}#3%
+    \def\insertblocktitle{#2}%
+    \par%
+    \mode<presentation>{%
+      \setbeamercolor{block title alerted}{fg=white,bg=uoyred}
+      \if\blockbodyopacity1
+        \setbeamercolor{block body alerted}{fg=uoytextcolor,bg=uoyred!10!white}
+      \else
+        \setbeamercolor{block body alerted}{fg=uoytextcolor,bg=}
+      \fi
+      \setbeamercolor{description item}{fg=#1}
+      \setbeamercolor{description subitem}{fg=#1}
+      \setbeamercolor{enumerate item}{fg=#1}
+      \setbeamercolor{enumerate subitem}{fg=#1}
+      \setbeamercolor{itemize item}{fg=#1}
+      \setbeamercolor{itemize subitem}{fg=#1}
+      \setbeamertemplate{itemize item}[triangle]
+      \setbeamertemplate{itemize subitem}[circle]
+      \setbeamercolor{local structure}{use=block title,%
+          fg=block title.bg}}%
+    \usebeamertemplate{block alerted begin}%
+  }{\par%
+    \usebeamertemplate{block alerted end}%
+  \end{actionenv}\vskip \blockbottommargin%
+  \end{blockminipage}}
+    
+% A few enviroments
+\newenvironment<>{termblock}[2][green!90!black]{%
+  \vskip \blocktopmargin%
+  \begin{blockminipage}{black}{\blockbodyopacity}%
+  \begin{actionenv}#3%
+      \def\insertblocktitle{\bfseries#2}%
+      \par%
+      \mode<presentation>{%
+        \setbeamercolor{block title}{fg=green!80!black,bg=black}
+        \if\blockbodyopacity1
+          \setbeamercolor{block body}{fg=white,bg=white!20!black}
+        \else
+          \setbeamercolor{block body}{fg=white,bg=}
+        \fi
+        \setbeamercolor{description item}{fg=#1}
+        \setbeamercolor{description subitem}{fg=#1}
+        \setbeamercolor{enumerate item}{fg=#1}
+        \setbeamercolor{enumerate subitem}{fg=#1}
+        \setbeamercolor{itemize item}{fg=#1}
+        \setbeamercolor{itemize subitem}{fg=#1}
+        \setbeamertemplate{itemize item}[triangle]
+        \setbeamertemplate{itemize subitem}[circle]
+     }%
+      \usebeamertemplate{block begin}}
+    {\par\usebeamertemplate{block end}\end{actionenv}\vskip \blockbottommargin\end{blockminipage}}
+    
+\newenvironment<>{problock}[2][green!80!black]{%
+  \vskip \blocktopmargin%
+  \begin{blockminipage}{green!3!white}{\blockbodyopacity}%
+  \begin{actionenv}#3%
+      \def\insertblocktitle{#2}%
+      \par%
+      \mode<presentation>{%
+        \setbeamercolor{block title}{fg=green!80!black,bg=green!5!white}
+        \if\blockbodyopacity1
+          \setbeamercolor{block body}{fg=uoydarkfg,bg=green!1!white}
+        \else
+          \setbeamercolor{block body}{fg=uoydarkfg,bg=}
+        \fi
+        \setbeamercolor{description item}{fg=#1}
+        \setbeamercolor{description subitem}{fg=#1}
+        \setbeamercolor{enumerate item}{fg=#1}
+        \setbeamercolor{enumerate subitem}{fg=#1}
+        \setbeamercolor{itemize item}{fg=#1}
+        \setbeamercolor{itemize subitem}{fg=#1}
+        \setbeamertemplate{itemize item}[triangle]
+        \setbeamertemplate{itemize subitem}[circle]
+     }%
+      \usebeamertemplate{block begin}}
+    {\par\usebeamertemplate{block end}\end{actionenv}\vskip \blockbottommargin\end{blockminipage}}
+    
+\newenvironment<>{conblock}[2][red!80!black]{%
+  \vskip \blocktopmargin%
+  \begin{blockminipage}{red!3!white}{\blockbodyopacity}%
+  \begin{actionenv}#3%
+      \def\insertblocktitle{#2}%
+      \par%
+      \mode<presentation>{%
+        \setbeamercolor{block title}{fg=red!80!black,bg=red!5!white}
+        \if\blockbodyopacity1
+          \setbeamercolor{block body}{fg=uoydarkfg,bg=red!1!white}
+        \else
+          \setbeamercolor{block body}{fg=uoydarkfg,bg=}
+        \fi
+        \setbeamercolor{description item}{fg=#1}
+        \setbeamercolor{description subitem}{fg=#1}
+        \setbeamercolor{enumerate item}{fg=#1}
+        \setbeamercolor{enumerate subitem}{fg=#1}
+        \setbeamercolor{itemize item}{fg=#1}
+        \setbeamercolor{itemize subitem}{fg=#1}
+        \setbeamertemplate{itemize item}[triangle]
+        \setbeamertemplate{itemize subitem}[circle]
+     }%
+      \usebeamertemplate{block begin}}
+    {\par\usebeamertemplate{block end}\end{actionenv}\vskip \blockbottommargin\end{blockminipage}}
+    
+\newenvironment<>{yellowblock}[2][yellow!90!black]{%
+  \vskip \blocktopmargin%
+  \begin{blockminipage}{yellow!40!white}{\blockbodyopacity}%
+  \begin{actionenv}#3%
+      \def\insertblocktitle{#2}%
+      \par%
+      \mode<presentation>{%
+        \setbeamercolor{block title}{fg=yellow!20!black,bg=yellow!60!white}
+        \if\blockbodyopacity1
+          \setbeamercolor{block body}{fg=black,bg=yellow!25!white}
+        \else
+          \setbeamercolor{block body}{fg=black,bg=}
+        \fi
+        \setbeamercolor{description item}{fg=#1}
+        \setbeamercolor{description subitem}{fg=#1}
+        \setbeamercolor{enumerate item}{fg=#1}
+        \setbeamercolor{enumerate subitem}{fg=#1}
+        \setbeamercolor{itemize item}{fg=#1}
+        \setbeamercolor{itemize subitem}{fg=#1}
+        \setbeamertemplate{itemize item}[triangle]
+        \setbeamertemplate{itemize subitem}[circle]
+     }%
+      \usebeamertemplate{block begin}}
+    {\par\usebeamertemplate{block end}\end{actionenv}\vskip \blockbottommargin\end{blockminipage}}
+    
+\newenvironment<>{blueblock}[2][uoyblue]{%
+  \vskip \blocktopmargin%
+  \begin{blockminipage}{uoyblue!40!white}{\blockbodyopacity}%
+  \begin{actionenv}#3%
+      \def\insertblocktitle{#2}%
+      \par%
+      \mode<presentation>{%
+        \setbeamercolor{block title}{fg=white,bg=uoyblue}
+        \if\blockbodyopacity1
+          \setbeamercolor{block body}{fg=uoytextcolor,bg=uoyblue!20!white}
+        \else
+          \setbeamercolor{block body}{fg=uoytextcolor,bg=}
+        \fi
+        \setbeamercolor{description item}{fg=#1}
+        \setbeamercolor{description subitem}{fg=#1}
+        \setbeamercolor{enumerate item}{fg=#1}
+        \setbeamercolor{enumerate subitem}{fg=#1}
+        \setbeamercolor{itemize item}{fg=#1}
+        \setbeamercolor{itemize subitem}{fg=#1}
+        \setbeamertemplate{itemize item}[triangle]
+        \setbeamertemplate{itemize subitem}[circle]
+     }%
+      \usebeamertemplate{block begin}}
+    {\par\usebeamertemplate{block end}\end{actionenv}\vskip \blockbottommargin\end{blockminipage}}
+    
+\setbeamertemplate{blocks}[default]
+
+\setbeamerfont{block title}{size=\normalsize\rule{0mm}{\f@size pt}\strut\ifx\insertblocktitle\@empty{\vspace{-2mm}\vspace{-\f@size pt}}\fi}
+\setbeamercolor{block title}{fg=white,bg=uoyblue}
+\setbeamercolor{block body}{fg=black,bg=uoyblue!20!white}
+
+\setbeamercolor{block title example}{fg=white,bg=green}
+\setbeamercolor{block body example}{fg=black,bg=green!20!white}
+
+\setbeamercolor{block title alerted}{fg=white,bg=uoypurple}
+\setbeamercolor{block body alerted}{fg=black,bg=uoypurple!20!white}
+
+% Title-Command
+\newcommand{\fcbox}[2]{{\fcolorbox{#1}{#1}{#2}}}
+
+\newcommand{\insertuoytab}[1]{
+  \begin{tikzpicture}[remember picture, overlay]
+    \node [anchor=north east, inner sep=0, scale=1.4] at ([xshift=-3mm, yshift=-4mm]current page.north east)
+      {\pgfuseimage{#1}};
+  \end{tikzpicture}
+}
+
+\newcommand{\insertuoyidentity}{
+  \begin{tikzpicture}[remember picture, overlay]
+    \fsize{1.7mm}
+    \color{uoyblue}
+    \node [anchor=north east, inner sep=0]  at ([xshift=-3mm, yshift=-16.5mm]current page.north east)
+      { \begin{hyphenrules}{nohyphenation}%
+          \textbf{{\uoysubid} {\uoyid}}
+        \end{hyphenrules}%
+      };
+  \end{tikzpicture}
+}
+
+\newcommand{\insertuoyidentityfaculty}{
+  \begin{tikzpicture}[remember picture, overlay]
+    \node [anchor=south west, inner sep=0]  at ([xshift=0.056\paperwidth, yshift=0.05\paperheight]current page.south west)
+      {
+        \def\thisblockfontheight{2.5mm}
+        \fboxrule=0pt
+        \fboxsep=0.8mm
+        \fsize{\thisblockfontheight}
+        \color{white}
+        \ifx\uoysubid\@empty\else\fcbox{uoydarkfg}{
+          \textbf{\rule{0mm}{\thisblockfontheight}\strut\uoysubid}
+        }\fi\fcbox{uoyidcolour}{
+          \textbf{\rule{0mm}{\thisblockfontheight}\strut\uoyid\ }
+        }%
+      };
+  \end{tikzpicture}
+}
+
+% TAB - Synced width and height (uoy title relates to it)
+\pgfdeclareimage[interpolate=true,height=8mm]{uoy-tab}{uoy-beamer/uoy-logo.pdf}
+\pgfdeclareimage[interpolate=true,height=8mm]{uoy-tab-institute}{uoy-beamer/uoy-logo.pdf}
+% \pgfdeclareimage[interpolate=true,width=0.136\paperwidth, height=20mm]{uoy-tab}{uoy-beamer/uoy-tab_\tabtype\incolour.pdf}
+
+% Cover
+\pgfdeclareimage[interpolate=true,width=\paperwidth]{bottomtitle}{uoy-beamer/cover.pdf}
+\pgfdeclareimage[interpolate=true,width=\paperwidth]{bottomtitledarktheme}{uoy-beamer/cover-white.pdf}
+\newcommand{\bgimg}{bottomtitle}
+
+% Unknown option
+\DeclareOption*{
+  \PackageWarning{uoy-beamer}{Unknown option '\CurrentOption'}
+}
+
+% Clear canvas
+\def\whitebg{1}
+\DeclareOption{uoynobg}{
+\def\whitebg{0}
+}
+
+% Clear canvas
+\def\whitebg{1}
+\DeclareOption{uoybglogo}{
+\def\whitebg{0}
+\renewcommand{\bgimg}{bottomtitle}
+}
+
+% Dark theme
+\def\darkbg{0}
+\DeclareOption{darktheme}{
+\def\darkbg{1}
+\def\whitebg{0}
+\colorlet{canvascolor}{uoydarkbg}
+\colorlet{uoystrongcolour}{uoyblue!70!white}
+\colorlet{uoylightcolour}{uoypurple!80!white}
+\colorlet{uoytextcolor}{white}
+\colorlet{slidetitle}{uoybluealt!60!white}
+\colorlet{quotesentence}{uoyblue!70!white}
+\colorlet{dotscolour}{white}
+\renewcommand{\bgimg}{bottomtitledarktheme}
+\pgfdeclareimage[interpolate=true,height=8mm]{uoy-tab}{uoy-beamer/uoy-logo-white.pdf}
+\pgfdeclareimage[interpolate=true,height=8mm]{uoy-tab-institute}{uoy-beamer/uoy-logo-white.pdf}
+}
+
+% Coloured logo
+\DeclareOption{colour}{
+\renewcommand{\incolour}{_colour}
+}
+\DeclareOption{color}{
+\renewcommand{\incolour}{_colour}
+}
+
+% MAIN/CORPORATE (default)
+\DeclareOption{main}{}
+
+% TECH colours
+% \DeclareOption{tech}{
+% \renewcommand{\tabtype}{tech}
+% 
+% \colorlet{uoystrongcolour}{uoyblue}
+% \colorlet{uoylightcolour}{uoybluelight}
+% \colorlet{uoyidcolour}{uoyblue}
+% \colorlet{slidetitle}{uoyblue}
+% \colorlet{slidetitles}{uoybluelight}
+% }
+
+% -- end of options
+\ProcessOptions\relax
+
+% Removes nav in pages
+\usenavigationsymbolstemplate{}
+
+% Colours
+\setbeamercolor{normal text}{fg=uoytextcolor}
+
+\setbeamercolor{section name}{fg=slidetitle}
+\setbeamercolor{section in toc}{fg=slidetitle}
+\setbeamercolor{subsection name}{fg=slidetitle}
+\setbeamercolor{subsection in toc}{}
+
+
+% Table of content
+\let\oldtoc\tableofcontents
+\renewcommand{\tableofcontents}{
+  \begin{minipage}{\textwidth}
+    \oldtoc
+  \end{minipage}
+}
+
+
+\newcommand{\quotesentence}[2][1em]{\vskip #1 \begin{minipage}{\textwidth}\begin{center} \color{quotesentence} \textbf{\LARGE #2} \end{center}\end{minipage}}
+
+\newcommand{\logobg}[1]{
+  \begin{tikzpicture}[remember picture, overlay]
+    \node [anchor=south west, inner sep=0pt, opacity=0.04, scale=.4, yshift=2cm, xshift=-3.4cm]  at (current page.south west)
+      {\pgfuseimage{#1}};
+  \end{tikzpicture}
+}
+
+\setbeamercolor{background canvas}{bg=canvascolor}
+\setbeamertemplate{background}{
+  \ifnumequal{\whitebg}{1}{}{
+    \ifnumequal{\c@framenumber}{1}{%
+      % First frame
+      \logobg{\bgimg}
+    }{%
+      \ifnumequal{\c@framenumber}{\inserttotalframenumber}{
+        % Last frame
+        \logobg{\bgimg}
+      }{%
+        % Other frames
+        \logobg{\bgimg}
+      }
+    }%
+  }
+}
+
+\newcommand{\inserttopline}{%
+\begin{tikzpicture}[overlay, remember picture]
+  \fill[fill=uoyblue] (current page.north west) rectangle ($(current page.north east)+(0,-0.2)$);
+\end{tikzpicture}%
+}
+
+\setbeamertemplate{title page}
+{
+  \inserttopline
+  \insertuoytab{uoy-tab}
+  \insertuoyidentityfaculty
+  \begin{center}
+    \vskip 20mm
+    {
+      \fboxrule=0pt
+      \fboxsep=1mm
+      \begin{minipage}[b][\height][b]{\dimexpr\textwidth-2\fboxsep-2\fboxrule\relax}
+        \centering
+          { \usebeamerfont{title}\LARGE\color{uoylightcolour}\textbf{\inserttitle} }
+        \ifx\insertsubtitle\@empty
+        \else
+          \tikz \fill [uoylightcolour] (0,0) rectangle (\textwidth,0.05);
+          \begin{minipage}{\dimexpr\textwidth-6\fboxsep-6\fboxrule\relax}
+          \centering
+            { \usebeamerfont{subtitle}\color{uoylightcolour}\rule{0mm}{\f@size pt}\strut{ \insertsubtitle} }
+          \end{minipage}
+        \fi
+        \vspace{1mm}
+      \end{minipage}
+    }
+%     \vskip 4mm
+    \vfill
+    {
+      \fboxrule=0pt
+      \fboxsep=1mm
+      \begin{minipage}[b][\height][b]{\dimexpr\textwidth-2\fboxsep-2\fboxrule\relax}
+        \vspace{2mm}
+        \centering
+        \ifx\insertauthor\@empty
+        \else
+          { \usebeamerfont{author}\large\color{uoytextcolor}{\insertauthor} }
+        \fi
+        \ifx\insertinstitute\@empty
+        \else
+          \vskip 2mm
+%             \fcbox{white}{
+            \begin{minipage}{\dimexpr\textwidth-6\fboxsep-6\fboxrule\relax}
+            \centering
+              { \usebeamerfont{author}\small\color{uoytextcolor}\rule{0mm}{\f@size pt}\insertinstitute }
+            \end{minipage}
+%             } % fcbox
+        \fi
+        \vspace{1mm}
+      \end{minipage}
+    }
+    \ifx\insertdate\@empty
+    \else
+      \begin{tikzpicture}[remember picture, overlay]
+        \node [anchor=south east, inner sep=0pt]  at ([yshift=3mm, xshift=-3mm]current page.south east)
+          { \small\color{uoyblue}\insertdate };
+      \end{tikzpicture}
+    \fi
+  \end{center}
+}
+
+
+\setbeamercolor{headline}{fg=white}
+\setbeamertemplate{headline}{
+  \inserttopline
+  \insertuoytab{uoy-tab-institute}
+  \insertuoyidentity
+  \vskip 19mm%
+%   \begin{center}%
+%     \ifx\insertframetitle\@empty
+      \parbox[t]{\paperwidth}{\strut}%
+%     \else
+%       \parbox[t]{\paperwidth}{\strut\color{dotscolour}\dotfill}%
+%     \fi
+%   \end{center}
+}
+
+\setbeamercolor{frametitle}{fg=slidetitle}
+\setbeamertemplate{frametitle}{
+  \vskip -16mm
+  \noindent\begin{minipage}{.77\textwidth}
+    \textbf{\color{uoylightcolour}\Large\strut\insertframetitle}
+  \end{minipage}
+  \vskip \frametitlemargin
+  \vfill
+}
+
+\setbeamercolor{footline}{fg=uoystrongcolour}
+\setbeamertemplate{footline}{
+  \vfill
+  \centerline{\parbox[t]{\paperwidth}{\strut\color{dotscolour}\dotfill}}%
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,left]{}%
+      \hspace*{2ex}\bfseries \insertshortauthor
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
+      \bfseries \insertshorttitle\ - \insertshortdate
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
+      \bfseries of \inserttotalframenumber \hspace*{2ex}
+    \end{beamercolorbox}
+  }%
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[uoypurple,anchor=south east, inner sep=0pt, yshift=-1mm, xshift=-14mm] (0,0) rectangle (7mm,5mm);
+    \node [anchor=south east, inner sep=0pt]  at ([yshift=-0.3mm, xshift=-9.7mm]current page.south east)
+      { \makebox[0.5mm]{\color{white!91!uoypurple}\large\bfseries\strut\insertframenumber{}} };
+  \end{tikzpicture}
+  \vskip0pt%
+}
+
+% Additional stuff
+\newcommand{\code}[1]{{\lstset{basicstyle=\large\ttfamily}\lstinline!#1!}}
+
+\mode
+<all>

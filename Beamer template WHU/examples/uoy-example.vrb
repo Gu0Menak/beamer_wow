@@ -1,0 +1,14 @@
+\frametitle{Blocks}
+\begin{block}{Additional blocks}
+\begin{itemize}
+  \item termblock
+  \item problock
+  \item conblock
+  \item yellowblock
+  \item blueblock
+\end{itemize}
+\end{block}
+Transparency of blocks may not look very nice on dark backgrounds, to disable it:
+\begin{lstlisting}
+\setblockbodyopacity{1}
+\end{lstlisting}
