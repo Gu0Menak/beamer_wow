@@ -1,4 +1,4 @@
 # beamer_wow
 emng enmg
 
-# Use pdflatex complie
+## Use pdflatex to compile
